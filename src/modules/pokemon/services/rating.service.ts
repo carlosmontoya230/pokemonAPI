@@ -15,18 +15,23 @@ export class RatingService {
     try {
       const { id, puntuation } = ratePokemonDto;
 
-      // Crea una nueva instancia de PokemonRating
       const pokemonRating = this.pokemonRatingRepository.create({
         pokemonId: id,
         puntuation
       });
 
-      // Guarda la calificación en la base de datos
       await this.pokemonRatingRepository.save(pokemonRating);
 
       return { message: "¡Calificación del Pokémon guardada con éxito!" };
     } catch (error) {
       throw new Error("Error al guardar la calificación del Pokémon");
     }
+  }
+
+  async getTopPokemon(top: number): Promise<PokemonRating[]> {
+    return await this.pokemonRatingRepository.find({
+      order: { puntuation: "DESC" },
+      take: top
+    });
   }
 }

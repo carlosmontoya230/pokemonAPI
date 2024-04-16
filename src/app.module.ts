@@ -5,6 +5,8 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { environmentDB } from "./environments/environmentBD";
 import { PokemonModule } from "./modules/pokemon/pokemon.module";
+import { PokemonRating } from "./modules/pokemon/entities/rating.entity";
+import { PokemonSearch } from "./modules/pokemon/entities/pokemon.entity";
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { PokemonModule } from "./modules/pokemon/pokemon.module";
       username: environmentDB.USER_NAME,
       password: environmentDB.PASSWORD,
       database: environmentDB.DATABASE,
-      autoLoadEntities: true,
+      entities: [PokemonRating, PokemonSearch],
       synchronize: true
     }),
     PokemonModule

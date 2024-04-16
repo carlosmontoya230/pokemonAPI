@@ -4,9 +4,6 @@ export class RatePokemonDto {
   @IsNumber()
   id: number;
 
-  // @IsNumber()
-  // pokemonId: number;
-
   @IsNumber()
   @Min(1)
   @Max(5)

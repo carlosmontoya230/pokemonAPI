@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { RatePokemonDto } from "../dtos/RatePokemonDto";
 import { RatingService } from "../services/rating.service";
 
@@ -15,33 +15,13 @@ export class PokemonRateController {
     }
   }
 
-  // @Post("rate")
-  // async ratePokemon(
-  //   @Body() ratePokemonDto: RatePokemonDto,
-  //   @Res() resp: Response
-  // ) {
-  //   try {
-  //     const { id, puntuation } = ratePokemonDto;
-  //     await this.pokemonService.ratePokemon(id, puntuation);
-  //     resp
-  //       .status(HttpStatus.CREATED)
-  //       .json({ message: "Pokemon rated successfully" });
-  //   } catch (error) {
-  //     resp
-  //       .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //       .json({ message: "Internal server error", error });
-  //   }
-  // }
-
-  // @Get("top")
-  // async getTopPokemon(@Query() query: TopPokemonDto, @Res() resp: Response) {
-  //   try {
-  //     const topPokemon = await this.pokemonService.getTopPokemon(query.top);
-  //     resp.status(HttpStatus.OK).json(topPokemon);
-  //   } catch (error) {
-  //     resp
-  //       .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //       .json({ message: "Internal server error", status: false, error });
-  //   }
-  // }
+  @Get("ranking/top")
+  async getTopPokemon(@Query("top") top: number) {
+    try {
+      const topPokemon = await this.pokemonService.getTopPokemon(top);
+      return topPokemon;
+    } catch (error) {
+      throw new Error("Error al obtener los Pokémon mejor calificados");
+    }
+  }
 }
