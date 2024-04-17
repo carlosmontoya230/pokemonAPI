@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { PokemonEntity } from "../entities/pokemon.entity";
@@ -12,7 +12,65 @@ export class PokemonSearchService {
     private readonly pokemonService: PokemonsService
   ) {}
 
-  // Inyeccción a la base de datos, repositorio de información de pokemones
+  async findPokemons(
+    name: string,
+    ope: string,
+    baseExperience: number
+  ): Promise<PokemonEntity[]> {
+    let queryBuilder = this.pokemonRepository.createQueryBuilder("pokemon");
+
+    if (name) {
+      queryBuilder = queryBuilder.where(
+        "LOWER(pokemon.name) LIKE LOWER(:name)",
+        { name: `%${name}%` }
+      );
+    }
+
+    if (ope && ["gt", "lt", "ge", "le", "eq"].includes(ope)) {
+      switch (ope) {
+        case "gt":
+          queryBuilder = queryBuilder.andWhere(
+            "pokemon.baseExperience > :baseExperience",
+            { baseExperience }
+          );
+          break;
+        case "lt":
+          queryBuilder = queryBuilder.andWhere(
+            "pokemon.baseExperience < :baseExperience",
+            { baseExperience }
+          );
+          break;
+        case "ge":
+          queryBuilder = queryBuilder.andWhere(
+            "pokemon.baseExperience >= :baseExperience",
+            { baseExperience }
+          );
+          break;
+        case "le":
+          queryBuilder = queryBuilder.andWhere(
+            "pokemon.baseExperience <= :baseExperience",
+            { baseExperience }
+          );
+          break;
+        case "eq":
+          queryBuilder = queryBuilder.andWhere(
+            "pokemon.baseExperience = :baseExperience",
+            { baseExperience }
+          );
+          break;
+      }
+    }
+
+    const results = await queryBuilder.getMany();
+
+    if (results.length === 0) {
+      throw new NotFoundException("No se encontraron resultados");
+    }
+
+    return results;
+  }
+
+  // Inyeccción a la base de datos, repositorio de información de pokemones, "funciona como semilla de llenado de datos"
   async fillPokemonTable() {
     try {
       for (let i = 1; i <= 100; i++) {
