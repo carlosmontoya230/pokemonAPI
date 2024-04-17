@@ -12,21 +12,26 @@ export class PokemonsService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  async findOne(name: string): Promise<AxiosResponse<any>> {
+  async findOne(name: string): Promise<any> {
     try {
-      const pokemonName = await firstValueFrom(
-        this.httpService.get(`${this.baseUrl}/pokemon/${name}`).pipe(
+      const pokemonInfo = await firstValueFrom(
+        this.httpService.get(`https://pokeapi.co/api/v2/pokemon/${name}`).pipe(
           map((res: AxiosResponse<any, any>) => {
-            return {
-              ...res.data
+            const modifiedData = {
+              id: res.data.id,
+              name: res.data.forms[0].name,
+              Info_Extra: res.data.forms[0].url,
+              base_experience: res.data.base_experience
             };
+            return modifiedData;
           }),
+
           catchError((err) => {
             throw err.response.data;
           })
         )
       );
-      return pokemonName;
+      return pokemonInfo;
     } catch (error) {
       throw error;
     }
@@ -62,11 +67,4 @@ export class PokemonsService {
       throw error;
     }
   }
-
-  //   async getTopPokemon(top: number): Promise<PokemonSearch[]> {
-  // return await this.pokemonSearchRepository.find({
-  //   order: { baseExperience: "DESC" },
-  //   take: top
-  // });
-  //   }
 }

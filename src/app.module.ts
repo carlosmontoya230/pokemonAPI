@@ -4,9 +4,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { environmentDB } from "./environments/environmentBD";
-import { PokemonModule } from "./modules/pokemon/pokemon.module";
+import { PokemonEntity } from "./modules/pokemon/entities/pokemon.entity";
 import { PokemonRating } from "./modules/pokemon/entities/rating.entity";
-import { PokemonSearch } from "./modules/pokemon/entities/pokemon.entity";
+import { PokemonModule } from "./modules/pokemon/pokemon.module";
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { PokemonSearch } from "./modules/pokemon/entities/pokemon.entity";
       username: environmentDB.USER_NAME,
       password: environmentDB.PASSWORD,
       database: environmentDB.DATABASE,
-      entities: [PokemonRating, PokemonSearch],
+      entities: [PokemonRating, PokemonEntity],
       synchronize: true
     }),
     PokemonModule

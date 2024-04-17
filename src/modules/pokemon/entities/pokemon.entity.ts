@@ -6,15 +6,12 @@ import {
 } from "typeorm";
 
 @Entity()
-export class PokemonSearch {
+export class PokemonEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
-
-  @Column()
-  opeBaseExperience: string;
 
   @Column()
   baseExperience: number;
